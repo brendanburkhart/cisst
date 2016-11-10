@@ -215,6 +215,23 @@ void cmnDataVectorDeSerializeBinaryCheckSize(_vectorType & data,
 }
 
 template <class _vectorType>
+size_t cmnDataVectorSerializeBinaryByteSize(const _vectorType & data)
+{
+    if (data.size() == 0) {
+        return 0;
+    }
+    size_t result = 0;
+    typedef typename _vectorType::value_type value_type;
+    typedef typename _vectorType::const_iterator const_iterator;
+    const const_iterator end = data.end();
+    const_iterator iter = data.begin();
+    for (; iter != end; ++iter) {
+        result += cmnData<value_type>::SerializeBinaryByteSize(*iter);
+    }
+    return result;
+}
+
+template <class _vectorType>
 size_t cmnDataVectorScalarNumber(const _vectorType & data)
 {
     if (data.size() == 0) {

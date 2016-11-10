@@ -91,6 +91,11 @@ public:
         cmnDataVectorDeSerializeBinaryResize(data, inputStream, localFormat, remoteFormat);
     }
 
+    static size_t SerializeBinaryByteSize(const DataType & data)
+    {
+        return sizeof(size_t) + cmnDataVectorSerializeBinaryByteSize(data);
+    }
+
     static bool ScalarNumberIsFixed(const DataType & CMN_UNUSED(data))
     {
         return false;

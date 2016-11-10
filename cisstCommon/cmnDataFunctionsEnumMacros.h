@@ -52,6 +52,9 @@ public:                                                                 \
      cmnData<_promotedType>::DeSerializeBinary(dataPromoted, inputStream, localFormat, remoteFormat); \
      data = static_cast<DataType>(dataPromoted);                        \
  }                                                                      \
+ static size_t SerializeBinaryByteSize(const DataType & data) {         \
+     return sizeof(_promotedType);                                      \
+ }                                                                      \
  static void SerializeText(const DataType & data, std::ostream & outputStream, \
                            const char CMN_UNUSED(delimiter) = ',') throw (std::runtime_error) { \
      CMN_ASSERT(sizeof(_promotedType) >= sizeof(DataType));             \

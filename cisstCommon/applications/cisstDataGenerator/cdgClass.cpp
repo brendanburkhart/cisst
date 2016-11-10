@@ -263,6 +263,9 @@ void cdgClass::GenerateDataMethodsHeader(std::ostream & outputStream) const
                  << "    void Copy(const " << name << " & source);" << std::endl
                  << "    void SerializeBinary(std::ostream & outputStream) const throw (std::runtime_error);" << std::endl
                  << "    void DeSerializeBinary(std::istream & inputStream, const cmnDataFormat & localFormat, const cmnDataFormat & remoteFormat) throw (std::runtime_error);" << std::endl
+                 << "    size_t SerializeBinaryByteSize(void) const;" << std::endl
+                 << "    size_t SerializeBinary(char * buffer, size_t bufferSize) const; " << std::endl
+                 << "    size_t DeSerializeBinary(const char * buffer, size_t bufferSize, const cmnDataFormat & localFormat, const cmnDataFormat & remoteFormat);" << std::endl
                  << "    void SerializeText(std::ostream & outputStream, const char delimiter = ',') const throw (std::runtime_error);" << std::endl
                  << "    std::string SerializeDescription(const char delimiter = ',', const std::string & userDescription = \"\") const;" << std::endl
                  << "    void DeSerializeText(std::istream & inputStream, const char delimiter = ',') throw (std::runtime_error);" << std::endl
@@ -512,6 +515,15 @@ void cdgClass::GenerateDataFunctionsHeader(std::ostream & outputStream) const
                  << "    static void DeSerializeBinary(DataType & data, std::istream & inputStream, const cmnDataFormat & localFormat, const cmnDataFormat & remoteFormat) throw (std::runtime_error) {" << std::endl
                  << "        data.DeSerializeBinary(inputStream, localFormat, remoteFormat);" << std::endl
                  << "    }" << std::endl
+                 << "    static size_t SerializeBinaryByteSize(const DataType & data) {" << std::endl
+                 << "        return data.SerializeBinaryByteSize();" << std::endl
+                 << "    }" << std::endl
+                 << "    static size_t SerializeBinary(const DataType & data, char * buffer, size_t bufferSize) {" << std::endl
+                 << "        return data.SerializeBinary(buffer, bufferSize);" << std::endl
+                 << "    }" << std::endl
+                 << "    static size_t DeSerializeBinary(DataType & data, const char * buffer, size_t bufferSize, const cmnDataFormat & localFormat, const cmnDataFormat & remoteFormat) {" << std::endl
+                 << "        return data.DeSerializeBinary(buffer, bufferSize, localFormat, remoteFormat);" << std::endl
+                 << "    }" << std::endl
                  << "    static void SerializeText(const DataType & data, std::ostream & outputStream, const char delimiter = ',') throw (std::runtime_error) {" << std::endl
                  << "        data.SerializeText(outputStream, delimiter);" << std::endl
                  << "    }" << std::endl
@@ -625,6 +637,26 @@ void cdgClass::GenerateDataFunctionsCode(std::ostream & outputStream) const
         }
     }
     outputStream << "}" << std::endl;
+
+
+
+    outputStream << "size_t " << className << "::SerializeBinaryByteSize(void) const {" << std::endl
+                 << "    return 0" << std::endl;
+    for (index = 0; index < BaseClasses.size(); index++) {
+        if (BaseClasses[index]->GetFieldValue("is-data") == "true") {
+            type = BaseClasses[index]->GetFieldValue("type");
+            outputStream << "           + cmnData< " << type << " >::SerializeBinaryByteSize(*this)" << std::endl;
+        }
+    }
+    for (index = 0; index < Members.size(); index++) {
+        if (Members[index]->GetFieldValue("is-data") == "true") {
+            type = Members[index]->GetFieldValue("type");
+            name = Members[index]->MemberName;
+            outputStream << "           + cmnData<" << type << " >::SerializeBinaryByteSize(this->" << name << ")" << std::endl;
+        }
+    }
+    outputStream << "    ;" << std::endl
+                 << "}" << std::endl;
 
 
 
