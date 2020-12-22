@@ -332,6 +332,9 @@ void cdgFile::GenerateHeader(std::ostream & outputStream) const
                  << "#if CISST_HAS_JSON" << std::endl
                  << "#include <cisstCommon/cmnDataFunctionsJSON.h>" << std::endl
                  << "#endif // CISST_HAS_JSON" << std::endl
+                 << "#if CISST_HAS_YAML" << std::endl
+                 << "#include <cisstCommon/cmnDataFunctionsYAML.h>" << std::endl
+                 << "#endif // CISST_HAS_YAML" << std::endl
                  << std::endl;
 
     this->Global->GenerateIncludes(outputStream);

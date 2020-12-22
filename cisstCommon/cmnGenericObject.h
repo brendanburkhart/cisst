@@ -5,8 +5,7 @@
   Author(s):  Anton Deguet
   Created on: 2004-08-18
 
-  (C) Copyright 2004-2017 Johns Hopkins University (JHU), All Rights
-  Reserved.
+  (C) Copyright 2004-2020 Johns Hopkins University (JHU), All Rights Reserved.
 
 --- begin cisst license - do not edit ---
 
@@ -38,6 +37,10 @@ http://www.cisst.org/cisst/license.txt.
 
 #if CISST_HAS_JSON
 #include <json/json.h>
+#endif // CISST_HAS_JSON
+
+#if CISST_HAS_YAML
+#include <yaml-cpp/yaml.h>
 #endif // CISST_HAS_JSON
 
 // Always include last
@@ -161,6 +164,11 @@ public:
     virtual void DeSerializeTextJSON(const Json::Value & CMN_UNUSED(jsonValue))
         CISST_THROW(std::runtime_error) {};
 #endif // CISST_HAS_JSON
+
+#if CISST_HAS_YAML
+    virtual void SerializeYAML(YAML::Node & CMN_UNUSED(yamlValue)) const {};
+    virtual bool DeSerializeYAML(const YAML::Node & CMN_UNUSED(yamlValue)) { return true; };
+#endif // CISST_HAS_YAML
 };
 
 

@@ -68,37 +68,37 @@ class {
         visibility public;
     }
 
-    enum {
-        name ArraySizeType;
-        enum-value {
-            name SIZE;
-            value 3;
-        }
-    }
+    // enum {
+    //     name ArraySizeType;
+    //     enum-value {
+    //         name SIZE;
+    //         value 3;
+    //     }
+    // }
 
-    member {
-        name CArray;
-        type double[SIZE];
-        visibility public;
-    }
+    // member {
+    //     name CArray;
+    //     type double[SIZE];
+    //     visibility public;
+    // }
 
-    enum {
-        name Array2DSizeType;
-        enum-value {
-            name ROW;
-            value 3;
-        }
-        enum-value {
-            name COL;
-            value 4;
-        }
-    }
+    // enum {
+    //     name Array2DSizeType;
+    //     enum-value {
+    //         name ROW;
+    //         value 3;
+    //     }
+    //     enum-value {
+    //         name COL;
+    //         value 4;
+    //     }
+    // }
 
-    member {
-        name CArray2D;
-        type size_t[ROW][COL];
-        visibility public;;
-    }
+    // member {
+    //     name CArray2D;
+    //     type size_t[ROW][COL];
+    //     visibility public;;
+    // }
 
     member {
         name dummyString;

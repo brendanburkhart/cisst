@@ -373,3 +373,69 @@ if (CISST_HAS_JSON)
 else (CISST_HAS_JSON)
   cisst_unset_all_package_settings (cisstCommon JSON)
 endif (CISST_HAS_JSON)
+
+
+# Support for YAML
+option (CISST_HAS_YAML "Do you want to compile YamlCpp with cisst?  If not, some examples and utilities won't be compiled" ON)
+
+if (CISST_HAS_YAML)
+
+  find_package (yaml-cpp REQUIRED)
+  if (YAML_CPP_FOUND)
+    set (YAML_CPP_INCLUDE_DIR "${YAMLCPP_INCLUDE_DIRS}")
+    set (YAML_CPP_LIBRARIES "${YAMLCPP_LIBRARIES}")
+    set (YAML_CPP_FOUND ON PARENT_SCOPE)
+    set (YAML_USE_SYSTEM_VERSION ON PARENT_SCOPE)
+  endif (YAML_CPP_FOUND)
+
+  # if (NOT YAMLCPP_FOUND)
+
+  #   # otherwise, build as external project
+  #   include (ExternalProject)
+
+  #   set (cisstYAML_PREFIX cisstYAMLExternal)
+  #   set (CISST_YAML_GIT_REPOSITORY https://github.com/jhu-cisst-external/yamlcpp.git)
+  #   set (CISST_YAML_GIT_TAG 1.7.4.2)
+
+  #   # add fPIC if possible
+  #   include (CheckCXXCompilerFlag)
+  #   check_cxx_compiler_flag ("-fPIC" CXX_SUPPORTS_FPIC)
+  #   if (CXX_SUPPORTS_FPIC)
+  #     set (YAML_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+  #   endif (CXX_SUPPORTS_FPIC)
+
+  #   ExternalProject_Add (cisstYAMLExternal
+  #                        PREFIX ${cisstYAML_PREFIX}
+  #                        GIT_REPOSITORY    ${CISST_YAML_GIT_REPOSITORY}
+  #                        GIT_TAG           ${CISST_YAML_GIT_TAG}
+  #                        CMAKE_CACHE_ARGS -DCMAKE_OSX_ARCHITECTURES:STRING=${CMAKE_OSX_ARCHITECTURES}
+  #                                         -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+  #                                         -DCMAKE_CXX_FLAGS:STRING=${YAML_CMAKE_CXX_FLAGS}
+  #                                         -DOPTION_BUILD_EXAMPLES:BOOL=OFF
+  #                                         -DYAMLCPP_WITH_TESTS:BOOL=OFF
+  #                                         -DYAMLCPP_WITH_POST_BUILD_UNITTEST:BOOL=OFF
+  #                                         -DYAMLCPP_WITH_STRICT_ISO:BOOL=OFF
+  #                                         -DCMAKE_INSTALL_PREFIX:FILEPATH=${cisst_BINARY_DIR}/cisstYAML
+  #                        INSTALL_DIR ${cisst_BINARY_DIR}/cisstYAML
+  #                        UPDATE_COMMAND ""
+  #                        )
+
+  #   # Set all YAML variables based on install directory
+  #   set (YAML_INCLUDE_DIR "${cisst_BINARY_DIR}/cisstYAML/include")
+  #   set (YAML_LIBRARY_DIRS "${cisst_BINARY_DIR}/cisstYAML/lib")
+  #   set (YAML_LIBRARIES yamlcpp)
+  #   set (YAML_FOUND ON PARENT_SCOPE)
+  #   set (YAML_USE_SYSTEM_VERSION OFF PARENT_SCOPE)
+
+  # endif (NOT YAMLCPP_FOUND)
+
+  # propagate to parent directory
+  set (YAML_CPP_INCLUDE_DIR ${YAML_CPP_INCLUDE_DIR} PARENT_SCOPE)
+  set (YAML_CPP_LIBRARIES ${YAML_CPP_LIBRARIES} PARENT_SCOPE)
+
+  cisst_set_package_settings (cisstCommon YAML INCLUDE_DIRECTORIES YAML_CPP_INCLUDE_DIR)
+  cisst_set_package_settings (cisstCommon YAML LIBRARIES           YAML_CPP_LIBRARIES)
+
+else (CISST_HAS_YAML)
+  cisst_unset_all_package_settings (cisstCommon YAML)
+endif (CISST_HAS_YAML)

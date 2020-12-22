@@ -28,8 +28,6 @@ http://www.cisst.org/cisst/license.txt.
 #include <vector>
 #include <iostream>
 
-using namespace std;
-
 typedef long int integer;
 typedef unsigned long int uinteger;
 typedef char *address;
@@ -420,7 +418,7 @@ robManipulator::ForwardKinematics( const vctDynamicVector<double>& q,
   if( N < 0 ) N = links.size();
 
   if( ((int)q.size()) < N ){
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::ForwardKinematics: expected up to " << N
        << " joint positions but received " << q.size();
     cmnThrow(std::range_error(ss.str()));
@@ -470,7 +468,7 @@ robManipulator::InverseKinematics( vctDynamicVector<double>& q,
                                    double LAMBDA ){
 
   if( q.size() != links.size() ){
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::InverseKinematics: expected "
        << links.size() << " joints values but received "
        << q.size();
@@ -595,7 +593,7 @@ robManipulator::InverseKinematics( vctDynamicVector<double>& q,
   delete[] dq;
 
   if( i==Niterations ) {
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::InverseKinematics: failed to converge in "
        << i << " iterations";
     mLastError = ss.str();
@@ -1126,7 +1124,7 @@ vctDynamicMatrix<double>
 robManipulator::JSinertia( const vctDynamicVector<double>& q ) const {
 
   if( q.size() != links.size() ){
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::JSinertia: expected "
        << links.size() << " joints values but received "
        << q.size();
@@ -1154,7 +1152,7 @@ void robManipulator::JSinertia( double **A,
                                 const vctDynamicVector<double>& q ) const {
 
   if( q.size() != links.size() ){
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::JSinertia: expected "
        << links.size() << " joints values but received "
        << q.size();
@@ -1702,7 +1700,7 @@ robManipulator::Errno robManipulator::Truncate(const size_t linksToKeep)
 {
   // not enough links
   if (linksToKeep > links.size()) {
-    stringstream ss;
+    std::stringstream ss;
     ss << "robManipulator::Truncate: can't truncate to "
        << linksToKeep << " since the manipulator has only "
        << links.size() << " links";
@@ -1745,7 +1743,7 @@ bool robManipulator::ClampJointValueAndUpdateError(const size_t link,
     // only set error if not within tolerance
     if (value > (qMax + tolerance)) {
       value = qMax;
-      stringstream ss;
+      std::stringstream ss;
       ss << link;
       mLastError = "robManipulator: position clamped to upper joint limit " + ss.str();
       return true;
@@ -1756,7 +1754,7 @@ bool robManipulator::ClampJointValueAndUpdateError(const size_t link,
   } else if (value < qMin) {
     if (value < (qMin - tolerance)) {
       value = qMin;
-      stringstream ss;
+      std::stringstream ss;
       ss << link;
       mLastError = "robManipulator: position clamped to lower joint limit " + ss.str();
       return true;

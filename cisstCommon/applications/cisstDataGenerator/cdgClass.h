@@ -88,6 +88,9 @@ protected:
     void GenerateDataFunctionsHeader(std::ostream & outputStream) const;
     void GenerateDataFunctionsCode(std::ostream & outputStream) const;
 
+    void GenerateYAMLHeader(std::ostream & outputStream) const;
+    void GenerateYAMLCode(std::ostream & outputStream) const;
+
     std::string ClassWithNamespace(void) const;
     std::string SkipIfEmpty(const std::string & code) const;
     std::string CMN_UNUSED_wrapped(const std::string & parameter) const;

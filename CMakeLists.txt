@@ -174,6 +174,7 @@ if (CISST_CATKIN_BUILT)
   # Options defaults
   set (CISST_cisstMesh         ON  CACHE BOOL "")
   set (CISST_HAS_JSON          ON  CACHE BOOL "")
+  set (CISST_HAS_YAML          ON  CACHE BOOL "")
   set (CISST_HAS_SWIG_PYTHON   ON  CACHE BOOL "" FORCE)
   set (CISST_BUILD_SHARED_LIBS ON  CACHE BOOL "" FORCE)
   set (CISST_USE_SI_UNITS      ON  CACHE BOOL "")

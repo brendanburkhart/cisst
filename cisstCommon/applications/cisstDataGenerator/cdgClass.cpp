@@ -227,6 +227,8 @@ void cdgClass::GenerateHeader(std::ostream & outputStream) const
         outputStream << "}; // end of namespace " << classNamespace << std::endl;
     }
 
+    GenerateYAMLHeader(outputStream);
+
     // make sure mts proxy is registered, use namespace if any
     if (mtsProxy != "false") {
         outputStream << std::endl
@@ -286,7 +288,31 @@ void cdgClass::GenerateDataMethodsHeader(std::ostream & outputStream) const
                  << "    void SerializeTextJSON(Json::Value & jsonValue) const;" << std::endl
                  << "    void DeSerializeTextJSON(const Json::Value & jsonValue) CISST_THROW(std::runtime_error);" << std::endl
                  << "#endif // CISST_HAS_JSON" << std::endl
+                 << "#if CISST_HAS_YAML" << std::endl
+                 << "    void SerializeYAML(YAML::Node & node) const;" << std::endl
+                 << "    bool DeSerializeYAML(const YAML::Node & node);" << std::endl
+                 << "#endif // CISST_HAS_YAML" << std::endl
                  << std::endl;
+}
+
+
+void cdgClass::GenerateYAMLHeader(std::ostream & outputStream) const
+{
+    std::string name = this->GetFieldValue("name");
+    outputStream << "#if CISST_HAS_YAML" << std::endl;
+    outputStream << "namespace YAML {" << std::endl
+                 << "    template<> class convert<" << name << "> {" << std::endl
+                 << "        static Node encode(const " << name << " & data) {" << std::endl
+                 << "            Node node;" << std::endl
+                 << "            data.SerializeYAML(node); " << std::endl
+                 << "            return node;" << std::endl
+                 << "        }" << std::endl
+                 << "        static bool decode(const Node & node, "<< name << " & data) {" << std::endl
+                 << "            return data.DeSerializeYAML(node);" << std::endl
+                 << "        }" << std::endl
+                 << "    };" << std::endl
+                 << "}" << std::endl;
+    outputStream << "#endif // CISST_HAS_YAML" << std::endl;
 }
 
 
@@ -323,6 +349,7 @@ void cdgClass::GenerateCode(std::ostream & outputStream) const
 
     GenerateStandardFunctionsCode(outputStream);
     GenerateDataFunctionsCode(outputStream);
+    GenerateYAMLCode(outputStream);
 }
 
 
@@ -915,6 +942,67 @@ void cdgClass::GenerateDataFunctionsCode(std::ostream & outputStream) const
     for (index = 0; index < Enums.size(); ++index) {
         Enums[index]->GenerateDataFunctionsCode(outputStream, className);
     }
+}
+
+
+void cdgClass::GenerateYAMLCode(std::ostream & outputStream) const
+{
+    const std::string className = this->ClassWithNamespace();
+    std::string type, name;
+    size_t index;
+
+    outputStream << "#if CISST_HAS_YAML" << std::endl
+                 << "void " << className << "::SerializeYAML(YAML::Node & " << CMN_UNUSED_wrapped("node") << ") const {" << std::endl;
+    for (index = 0; index < BaseClasses.size(); index++) {
+        if (BaseClasses[index]->GetFieldValue("is-data") == "true") {
+            type = BaseClasses[index]->GetFieldValue("type");
+            outputStream << "    (dynamic_cast<const " << type << "*>(this))->SerializeYAML(node);" << std::endl;
+        }
+    }
+    for (index = 0; index < Members.size(); index++) {
+        if (Members[index]->GetFieldValue("is-data") == "true") {
+            type = Members[index]->GetFieldValue("type");
+            name = Members[index]->MemberName;
+            outputStream << "    node[\"" << Members[index]->GetFieldValue("name")
+                         << "\"] = this->" << name << ";" << std::endl;
+        }
+    }
+    outputStream << "}" << std::endl
+                 << "bool " << className << "::DeSerializeYAML(const YAML::Node & " << CMN_UNUSED_wrapped("node") << ") CISST_THROW(std::runtime_error) {" << std::endl;
+    for (index = 0; index < BaseClasses.size(); index++) {
+        if (BaseClasses[index]->GetFieldValue("is-data") == "true") {
+            type = BaseClasses[index]->GetFieldValue("type");
+            outputStream << "    if (!(dynamic_cast<" << type << "*>(this))->DeSerializeYAML(node)) {" << std::endl
+                         << "        return false;" << std::endl
+                         << "    }" << std::endl;
+        }
+    }
+    outputStream << "    YAML::Node field__cdg;" << std::endl;
+    for (index = 0; index < Members.size(); index++) {
+        if (Members[index]->GetFieldValue("is-data") == "true") {
+            type = Members[index]->GetFieldValue("type");
+            name = Members[index]->MemberName;
+            outputStream << "    field__cdg = node[\""
+                         << Members[index]->GetFieldValue("name") << "\"];" << std::endl
+                         << "    if (!field__cdg) {" << std::endl
+                         << "        this->" << name << " = field__cdg.as<" << type << ">();" << std::endl;
+            // if there is no default value, we need one from YAML
+            if (Members[index]->GetFieldValue("default").empty()) {
+                outputStream << "    } else {" << std::endl
+                             << "        return false;" << std::endl
+                             << "    }" << std::endl;
+            } else {
+                outputStream << "    } else {" << std::endl
+                             << "        this->" << name << " = " << Members[index]->GetFieldValue("default") << ";" << std::endl
+                             << "    }" << std::endl;
+            }
+        }
+    }
+    outputStream << "    return true;" << std::endl
+                 << "}" << std::endl
+                 << "#endif // CISST_HAS_YAML" << std::endl;
+
+
 }
 
 

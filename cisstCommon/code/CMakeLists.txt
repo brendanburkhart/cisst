@@ -100,6 +100,12 @@ if (CISST_HAS_JSON)
        cmnDataFunctionsJSON.h)
 endif (CISST_HAS_JSON)
 
+if (CISST_HAS_YAML)
+  set (HEADER_FILES
+       ${HEADER_FILES}
+       cmnDataFunctionsYAML.h)
+endif (CISST_HAS_YAML)
+
 cisst_add_library (
   LIBRARY cisstCommon
   FOLDER cisstCommon

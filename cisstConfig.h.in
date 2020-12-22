@@ -95,6 +95,11 @@ http://www.cisst.org/cisst/license.txt.
 #cmakedefine01 CISST_HAS_JSON
 #endif
 
+// Using yaml-cpp
+#ifndef CISST_SKIP_YAML // for cisst data generator
+#cmakedefine01 CISST_HAS_YAML
+#endif
+
 // Using SI units (ie meters) or mm for distances
 #cmakedefine01 CISST_USE_SI_UNITS
 

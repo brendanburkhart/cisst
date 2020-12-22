@@ -24,7 +24,7 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR})
 # Instead we explicitely include the symbols we need.
 
 # to avoid JSON dependency in cmnGenericObject
-add_definitions (-DCISST_SKIP_JSON)
+add_definitions (-DCISST_SKIP_JSON -DCISST_SKIP_YAML)
 
 set (SOURCE_FILES_FROM_cisstCommon
      ${cisstCommonLibs_SOURCE_DIR}/code/cmnClassRegister.cpp
